@@ -4,6 +4,9 @@ Revisor asistido de cambios para Oracle Factory. Busca defectos concretos en un 
 
 ## Enfoque del prototipo
 
+El esbozo funcional, el flujo de análisis y el formato de hallazgo están en [docs/arquitectura.md](docs/arquitectura.md) y [docs/hallazgos.schema.json](docs/hallazgos.schema.json).
+
+
 Oracle Clue será una CLI que se ejecuta desde la máquina del desarrollador contra cualquier checkout Git. No requiere instalar una GitHub App ni agregar una dependencia de ejecución al repositorio revisado. Al principio podrá usar un agente local mediante un adaptador; la interfaz de análisis no quedará atada a un proveedor. Una configuración opcional `.oracle-clue.toml` podrá declarar convenciones, límites y comandos de prueba.
 
 El comando de revisión será de solo lectura y tomará el diff, la spec OpenSpec enlazada, las reglas del proyecto y la evidencia de pruebas disponible. Entregará hallazgos estructurados con ruta y líneas, escenario de reproducción, impacto, evidencia, confianza y requisito relacionado cuando corresponda. Si la evidencia no alcanza, registrará una pregunta o incertidumbre, no un defecto afirmado.

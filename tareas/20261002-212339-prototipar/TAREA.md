@@ -22,8 +22,12 @@ Acordado: CLI local fuera del ciclo de instalación de cada repo; agente/modelo 
 
 ## Próximo paso
 
-Implementar el generador de paquete de revisión para `--base <ref>` (diff, metadatos y spec OpenSpec enlazada) y validarlo con un repo de prueba que contenga defectos sembrados.
+Implementar el generador de paquete de revisión para `--base <ref>` y validarlo con un repo de prueba con defectos sembrados.
 
-### Nota (2026-10-02 21:26:04 UTC)
+### Nota (2026-10-02 22:28:35 UTC)
 
-Inicialicé ~/Dev/oracle-clue con Git y Oracle; README define el enfoque y los límites iniciales. Todavía no hay revisión automática implementada ni remote GitHub configurado.
+Esbozo funcional completado: flujo read-only, CLI conceptual, adaptador, límites, evaluación y schema JSON versionado en docs/. Próximo paso: implementar el bundle y validarlo con defectos sembrados.
+
+### Nota (2026-10-02 22:30:44 UTC)
+
+Remoto público Segtem/oracle-clue confirmado en GitHub; se publica el esbozo de arquitectura en main.
