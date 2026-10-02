@@ -26,7 +26,7 @@ Un adaptador recibe un paquete serializado y devuelve JSON conforme al schema. E
 
 ## Esquema de hallazgos
 
-`docs/hallazgos.schema.json` fija el formato. Clases iniciales: bug, seguridad, regresión, discrepancia_con_spec y pregunta. Severidad y confianza son campos separados; una confianza baja no se presenta como hallazgo confirmado. Cada elemento debe incluir título, explicación breve, archivo/líneas, escenario activador, evidencia observable y recomendación de verificación. No permitir que el modelo escriba o autoaplique parches.
+`docs/hallazgos.schema.json` fija el formato. Clases iniciales: bug, seguridad, regresión, discrepancia_con_spec y pregunta. Severidad y confianza son campos separados; una confianza baja no se presenta como hallazgo confirmado. Cada elemento debe incluir título, explicación breve, archivo/líneas, lado base/head del diff, escenario activador, evidencia observable y recomendación de verificación (`verification`). No permitir que el modelo escriba o autoaplique parches.
 
 ## Evaluación del prototipo
 
@@ -38,3 +38,17 @@ Preparar cambios de prueba con defectos conocidos y cambios limpios. Registrar d
 2. Adaptador de agente local, schema validado y reportes vinculados a hash.
 3. Triage humano persistente en Trackertast/Factory.
 4. Integración GitHub opcional que publica el reporte en PR; sigue sin aprobar ni fusionar automáticamente.
+
+## Frontera entre el modelo y la decisión humana
+
+El adaptador entrega hallazgos pendientes. La CLI completa la identidad del proveedor, modelo (o `null` si no se informa), hashes de commit/diff/contexto y estado de ejecución con datos comprobados; esos metadatos no se toman como afirmaciones del modelo. `review_status: incompleto` requiere explicar limitaciones; un informe vacío o incompleto no equivale a aprobación.
+
+El informe es inmutable. El triage humano vive en `docs/triage.schema.json`, enlazado por el hash del informe, con id de hallazgo, decisión, motivo, actor y fecha. El schema del informe rechaza estados corregido/descartado/riesgo_aceptado. Guardar un nombre de actor no autentica una identidad: esa garantía requiere el canal humano de Factory o GitHub.
+
+La validación futura debe comprobar también lo que JSON Schema no garantiza: ids únicos; `start_line <= end_line`; rutas relativas dentro del checkout; rangos pertenecientes al lado correcto del diff; referencias a hallazgos existentes y decisiones vinculadas al informe vigente. El hash del contexto incluirá spec, reglas y evidencia de pruebas seleccionadas, además del diff. Un contexto cambiado exige otra revisión. La confianza declarada por el modelo no es una probabilidad calibrada.
+
+Ejecutar un agente desde una CLI local no implica inferencia local: Codex/Claude pueden enviar contexto al proveedor que tengan configurado. El operador elige proveedor y alcance de archivos. El paquete debe declarar omisiones y truncamientos; no prometer detección infalible de secretos ni analizar repos completos por defecto.
+
+## Verificación del contrato
+
+`tests/test_contract.py` valida ambos schemas y casos positivos/negativos. Requiere `jsonschema` (solo para pruebas): `uv run --with jsonschema python -m unittest discover -s tests -v`. Esto comprueba el contrato de datos; todavía no existe un revisor ejecutable ni una evaluación de precisión del modelo.
