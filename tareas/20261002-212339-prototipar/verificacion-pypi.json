@@ -1,0 +1,19 @@
+{
+  "paquete": "oracle-clue",
+  "version": "0.1.0a1",
+  "origen": "https://pypi.org/simple",
+  "archivos": [
+    {
+      "archivo": "oracle_clue-0.1.0a1-py3-none-any.whl",
+      "sha256": "d6ec1b37d63fee042dbe3f73d5502a86e3e9689129359e157d15294fc225fc63",
+      "coincide_release": true
+    },
+    {
+      "archivo": "oracle_clue-0.1.0a1.tar.gz",
+      "sha256": "b61e34e1475e0ae1f5e443357fe6f11a7bc7b56ae2cf844bced7926b40588b31",
+      "coincide_release": true
+    }
+  ],
+  "prueba_instalada": "OK: CLI instalada, paquete de revisión, informe válido, rechazo de rango falso y repo intacto.",
+  "entorno": "Linux, Python 3.13, uv tool install con cache y entorno nuevos"
+}

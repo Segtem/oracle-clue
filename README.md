@@ -6,14 +6,15 @@ CLI local para preparar contexto reproducible y validar informes externos de rev
 
 ## Instalación
 
-La publicación en PyPI queda a cargo del mantenedor. El release de GitHub incluye el wheel probado:
+La versión alpha 0.1.0a1 está [publicada en PyPI](https://pypi.org/project/oracle-clue/0.1.0a1/):
 
 ```bash
-uv tool install https://github.com/Segtem/oracle-clue/releases/download/v0.1.0a1/oracle_clue-0.1.0a1-py3-none-any.whl
+uv tool install --python 3.13 oracle-clue==0.1.0a1
+uv tool update-shell
 oracle-clue --version
 ```
 
-Requiere Git y Python >=3.11. Después de publicar esta versión en PyPI, se podrá instalar con `uv tool install oracle-clue==0.1.0a1`.
+Requiere Git y Python >=3.11. También se puede ejecutar sin instalación persistente: `uvx --from oracle-clue==0.1.0a1 oracle-clue --help`. Los artefactos originales y sus hashes permanecen en el [release](https://github.com/Segtem/oracle-clue/releases/tag/v0.1.0a1).
 
 ## Preparar una revisión
 

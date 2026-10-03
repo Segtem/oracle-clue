@@ -44,6 +44,11 @@ Clue: 21 tests de contratos y recolección/validación OK contra el wheel instal
 
 Release alpha publicado y verificado: https://github.com/Segtem/oracle-clue/releases/tag/v0.1.0a1. Tag v0.1.0a1 sobre 007192e73df8a33610b16bdeeb4d7e91ebb9dfa5; main empujado. Wheel, sdist y SHA256SUMS remotos coinciden con los artefactos probados. PyPI queda pendiente del usuario.
 
+
+### Nota (2026-10-03 17:28:24 UTC)
+
+Publicación PyPI confirmada por el usuario y verificada: 0.1.0a1. Wheel/sdist del índice coinciden por SHA-256 con el release. Instalación con uv, Python 3.13 y cache nueva; prueba funcional del ejecutable instalado OK. Evidencia en verificacion-pypi.json. README actualizado para usar el índice.
+
 ## Próximo paso
 
-El usuario publica en PyPI los artefactos probados del release v0.1.0a1 (también en dist/), siguiendo NOTAS-DE-RELEASE.md. Tras su aviso, verificar instalación desde PyPI con uv en un entorno limpio y actualizar la guía para usar el índice. Después implementar el adaptador IA y evaluar precisión; este alpha solo prepara contexto y valida informes externos.
+Implementar el adaptador de revisión con IA sobre el paquete reproducible: elegir explícitamente proveedor, validar solo hallazgos, completar metadatos en la CLI y evaluar con defectos sembrados y cambios limpios. La distribución 0.1.0a1 ya está publicada y verificada; no implica revisión automática todavía.
