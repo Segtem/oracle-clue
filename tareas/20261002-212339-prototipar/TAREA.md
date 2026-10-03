@@ -39,6 +39,11 @@ Usuario autorizó preparar paquete y GitHub Release. Primer corte alpha 0.1.0a1:
 
 Clue: 21 tests de contratos y recolección/validación OK contra el wheel instalado con Python 3.11.16. Entry point probado fuera del checkout: contexto, informe fixture válido, rango falso rechazado y repo intacto. Twine valida wheel y sdist. No se evaluó precisión de IA: el alpha no invoca modelos.
 
+
+### Nota (2026-10-03 13:12:23 UTC)
+
+Release alpha publicado y verificado: https://github.com/Segtem/oracle-clue/releases/tag/v0.1.0a1. Tag v0.1.0a1 sobre 007192e73df8a33610b16bdeeb4d7e91ebb9dfa5; main empujado. Wheel, sdist y SHA256SUMS remotos coinciden con los artefactos probados. PyPI queda pendiente del usuario.
+
 ## Próximo paso
 
-Integrar el corte alpha 0.1.0a1 en main, construir los artefactos definitivos y publicar tag/GitHub Release con wheel, sdist y SHA256SUMS. Después el usuario publica en PyPI; verificar instalación desde el índice tras su aviso. Clue conserva pendiente el adaptador IA y la evaluación con defectos sembrados y cambios limpios.
+El usuario publica en PyPI los artefactos probados del release v0.1.0a1 (también en dist/), siguiendo NOTAS-DE-RELEASE.md. Tras su aviso, verificar instalación desde PyPI con uv en un entorno limpio y actualizar la guía para usar el índice. Después implementar el adaptador IA y evaluar precisión; este alpha solo prepara contexto y valida informes externos.
