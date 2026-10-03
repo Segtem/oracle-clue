@@ -38,7 +38,7 @@ Preparar cambios de prueba con defectos conocidos y cambios limpios. Registrar d
 
 1. Generador determinista del paquete de revisión y pruebas.
 2. Adaptador de agente local, schema validado y reportes vinculados a hash.
-3. Triage humano persistente en Trackertast/Factory.
+3. Triage humano persistente en Oracle Task/Factory.
 4. Integración GitHub opcional que publica el reporte en PR; sigue sin aprobar ni fusionar automáticamente.
 
 ## Frontera entre el modelo y la decisión humana
