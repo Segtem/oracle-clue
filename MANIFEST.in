@@ -1,0 +1,4 @@
+include NOTAS-DE-RELEASE.md
+recursive-include docs *.json *.md
+recursive-include tests *.py
+recursive-include tools *.py

@@ -1,4 +1,6 @@
-# Esbozo funcional de Oracle Clue
+# Arquitectura de Oracle Clue
+
+Estado 0.1.0a1: implementados `preparar` (diff entre commits, con árbol versionado limpio) y `validar` (informe externo y triage opcional). `review`, adaptadores, configuración automática e integración con Factory/GitHub siguen siendo diseño futuro.
 
 ## Propósito y frontera
 
@@ -51,4 +53,4 @@ Ejecutar un agente desde una CLI local no implica inferencia local: Codex/Claude
 
 ## Verificación del contrato
 
-`tests/test_contract.py` valida ambos schemas y casos positivos/negativos. Requiere `jsonschema` (solo para pruebas): `uv run --with jsonschema python -m unittest discover -s tests -v`. Esto comprueba el contrato de datos; todavía no existe un revisor ejecutable ni una evaluación de precisión del modelo.
+`tests/test_contract.py` valida ambos schemas y casos positivos/negativos. Requiere `jsonschema` (solo para pruebas): `uv run --with jsonschema python -m unittest discover -s tests -v`. Los tests de CLI agregan recolección y validación sobre repos temporales. Todavía no existe análisis automático ni evaluación de precisión de un modelo.

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oracle-clue"
+version = "0.1.0a1"
+description = "Contexto reproducible y validación de informes para revisión de cambios Git"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["jsonschema>=4.23,<5"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Natural Language :: Spanish",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.scripts]
+oracle-clue = "oracle_clue.cli:main"
+
+[project.urls]
+Repositorio = "https://github.com/Segtem/oracle-clue"
+Issues = "https://github.com/Segtem/oracle-clue/issues"
+
+[tool.setuptools.packages.find]
+include = ["oracle_clue*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+oracle_clue = ["schemas/*.json"]

@@ -30,6 +30,15 @@ Remoto público Segtem/oracle-clue confirmado en GitHub; se publica el esbozo de
 
 Auditoría: schema del modelo restringido a pendiente; triage humano separado con motivo/actor/fecha y hash del informe. Añadidos contexto, estado incompleto, lado del diff y verificación. 7 pruebas JSON Schema OK. Sigue siendo esbozo y contratos, no CLI implementada.
 
+
+### Nota (2026-10-03 12:37:35 UTC)
+
+Usuario autorizó preparar paquete y GitHub Release. Primer corte alpha 0.1.0a1: generador determinista del contexto y validador de informes, instalable por uv. Adaptadores IA y evaluación de precisión siguen pendientes; no se publica una capacidad que aún no existe.
+
+### Nota (2026-10-03 12:56:50 UTC)
+
+Clue: 21 tests de contratos y recolección/validación OK contra el wheel instalado con Python 3.11.16. Entry point probado fuera del checkout: contexto, informe fixture válido, rango falso rechazado y repo intacto. Twine valida wheel y sdist. No se evaluó precisión de IA: el alpha no invoca modelos.
+
 ## Próximo paso
 
-Implementar el generador de paquete de revisión para `--base <ref>` según `docs/arquitectura.md`, validar el contexto y ambos contratos y medir el resultado con defectos sembrados.
+Integrar el corte alpha 0.1.0a1 en main, construir los artefactos definitivos y publicar tag/GitHub Release con wheel, sdist y SHA256SUMS. Después el usuario publica en PyPI; verificar instalación desde el índice tras su aviso. Clue conserva pendiente el adaptador IA y la evaluación con defectos sembrados y cambios limpios.
