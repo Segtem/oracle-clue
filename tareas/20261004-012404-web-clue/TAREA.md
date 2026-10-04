@@ -1,6 +1,6 @@
 # Crear una web pixel art de Oracle Clue con guía precisa
 
-- ESTADO: ABIERTA
+- ESTADO: CERRADA
 - PRIORIDAD: 60
 - ETIQUETAS:
 
@@ -32,6 +32,12 @@ agy2 entregó sitio nuevo y guía; root corrigió alcance de hashes, rangos que 
 
 - Adjunto: [guia-mobile.png](guia-mobile.png)
 
+### Nota (2026-10-04 02:17:23 UTC)
+
+Publicado en main (f4caedbf57d87649335a47ce36a7f536db27020b) y Pages https://segtem.github.io/oracle-clue/. Despliegue exitoso: https://github.com/Segtem/oracle-clue/actions/runs/37170418904. Verificación HTTP de 8 archivos HTML/CSS/JS/SVG/JSON: todos 200 y SHA-256 idéntico a docs/. Evidencia pública adjunta. Se cierra el alcance documental pedido; versiones PyPI siguen iguales, sin corte nuevo.
+
+- Adjunto: [oracle-clue-web-public.json](oracle-clue-web-public.json)
+
 ## Próximo paso
 
-Integrar esta rama en main, empujar y verificar publicación real: Actions/Pages y bytes HTTP frente a docs/. Después registrar evidencia del despliegue y cerrar con commit del ID: done.
+Web publicada y verificada; no queda trabajo de este alcance. Nuevas mejoras y el piloto humano se registran como tareas separadas, sin presentar esta verificación técnica como experiencia de una persona principiante.
