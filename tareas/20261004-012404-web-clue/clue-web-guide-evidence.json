@@ -1,0 +1,122 @@
+[
+  {
+    "command": "git init",
+    "returncode": 0,
+    "stdout": "Initialized empty Git repository in /tmp/clue-web-guia-c89cthyb/laboratorio-clue/.git/\n",
+    "stderr": "hint: Using 'master' as the name for the initial branch. This default branch name\nhint: will change to \"main\" in Git 3.0. To configure the initial branch name\nhint: to use in all of your new repositories, which will suppress this warning,\nhint: call:\nhint:\nhint: \tgit config --global init.defaultBranch <name>\nhint:\nhint: Names commonly chosen instead of 'master' are 'main', 'trunk' and\nhint: 'development'. The just-created branch can be renamed via this command:\nhint:\nhint: \tgit branch -m <name>\nhint:\nhint: Disable this message with \"git config set advice.defaultBranchName false\"\n"
+  },
+  {
+    "command": "git config user.name \"Tu Nombre\"",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git config user.email \"tu-correo@example.invalid\"",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git add total.py",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git commit -m \"Implementar cálculo de total original\"",
+    "returncode": 0,
+    "stdout": "[master (root-commit) 1135b7a] Implementar cálculo de total original\n 1 file changed, 2 insertions(+)\n create mode 100644 total.py\n",
+    "stderr": ""
+  },
+  {
+    "command": "git add total.py",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git commit -m \"Modificar cálculo de total con defecto sembrado\"",
+    "returncode": 0,
+    "stdout": "[master bca3b28] Modificar cálculo de total con defecto sembrado\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+    "stderr": ""
+  },
+  {
+    "command": "git status",
+    "returncode": 0,
+    "stdout": "On branch master\nnothing to commit, working tree clean\n",
+    "stderr": ""
+  },
+  {
+    "command": "git add especificacion.md",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git commit -m \"Agregar especificación de cálculo\"",
+    "returncode": 0,
+    "stdout": "[master 76b6751] Agregar especificación de cálculo\n 1 file changed, 2 insertions(+)\n create mode 100644 especificacion.md\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue preparar --repo . --base HEAD~2 --contexto especificacion.md --salida ../revisiones/contexto.json",
+    "returncode": 0,
+    "stdout": "Paquete preparado: ../revisiones/contexto.json; omisiones: 0. No es un informe de revisión.\n",
+    "stderr": ""
+  },
+  {
+    "command": "uv run --no-project --python 3.13 python armar_informe.py",
+    "returncode": 0,
+    "stdout": "Informe redactado con éxito en: ../revisiones/informe.json\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .",
+    "returncode": 0,
+    "stdout": "Formato y vigencia verificados. No confirma los hallazgos ni autentica al revisor o al actor humano.\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "CLUE: el rango del hallazgo no pertenece a ese lado del diff\n"
+  },
+  {
+    "command": "uv run --no-project --python 3.13 python armar_triage.py",
+    "returncode": 0,
+    "stdout": "Este asistente registra tu decisión; no verifica que sea correcta ni ejecuta correcciones.\nId del hallazgo sobre el que decidiste: Decisión ya tomada (corregido, descartado o riesgo_aceptado): Motivo y evidencia de la decisión: Tu nombre: Decisión registrada en: ../revisiones/triage.json\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo . --triage ../revisiones/triage.json",
+    "returncode": 0,
+    "stdout": "Formato y vigencia verificados. No confirma los hallazgos ni autentica al revisor o al actor humano.\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo . --triage ../revisiones/triage.json",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "CLUE: triage vinculado a otro informe\n"
+  },
+  {
+    "command": "git add total.py",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": "git commit -m \"Corregir cálculo de total restableciendo multiplicación\"",
+    "returncode": 0,
+    "stdout": "[master 18119fd] Corregir cálculo de total restableciendo multiplicación\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+    "stderr": ""
+  },
+  {
+    "command": "oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "CLUE: el paquete no coincide con el repositorio/contexto actual\n"
+  }
+]

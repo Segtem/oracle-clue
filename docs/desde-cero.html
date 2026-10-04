@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guía paso a paso desde cero para usar Oracle Clue 0.1.0a1: instalación con uv desde PyPI, preparación de paquetes de diff en repositorios locales y validación estricta de informes de revisión externos.">
+  <meta name="theme-color" content="#132421">
+  <title>Desde cero — Oracle Clue</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script src="./assets/guide.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#guia">Saltar a la guía</a>
+
+<header class="topbar wrap">
+  <a class="brand" href="./index.html" aria-label="Oracle Clue, inicio">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="4" fill="#132421"/>
+      <rect x="5" y="5" width="10" height="14" fill="#1e3630"/>
+      <rect x="17" y="5" width="10" height="14" fill="#1e3630"/>
+      <rect x="7" y="8" width="6" height="2" fill="#d46b5a"/>
+      <rect x="7" y="12" width="4" height="2" fill="#738b82"/>
+      <rect x="19" y="8" width="6" height="2" fill="#a2d6b5"/>
+      <rect x="19" y="12" width="6" height="2" fill="#a2d6b5"/>
+      <rect x="11" y="11" width="10" height="2" fill="#ebc36f"/>
+      <rect x="11" y="19" width="10" height="2" fill="#ebc36f"/>
+      <rect x="9" y="13" width="2" height="6" fill="#ebc36f"/>
+      <rect x="21" y="13" width="2" height="6" fill="#ebc36f"/>
+      <rect x="20" y="20" width="3" height="3" fill="#ebc36f"/>
+      <rect x="22" y="22" width="3" height="3" fill="#c79947"/>
+      <rect x="24" y="24" width="4" height="4" fill="#8c642d"/>
+    </svg>
+    <span>ORACLE <span class="brand-detail">CLUE 0.1.0a1</span></span>
+  </a>
+  <nav aria-label="Navegación principal">
+    <a href="./index.html#mesa">Mesa de inspección</a>
+    <a href="./index.html#contratos">Entrada y salida</a>
+    <a href="./index.html#limites">Límites y realidades</a>
+    <a href="./index.html#familia">Familia Oracle</a>
+    <a href="./desde-cero.html" aria-current="page">Desde cero</a>
+  </nav>
+  <a class="repo-link" href="https://github.com/Segtem/oracle-clue" target="_blank" rel="noreferrer">Código abierto <span aria-hidden="true">↗</span></a>
+</header>
+
+<main class="wrap guide-page" id="guia">
+  <div class="guide-heading">
+    <p class="eyebrow"><span class="signal green"></span> TU PRIMER PAQUETE Y VALIDACIÓN / PASO A PASO</p>
+    <h1>Clue,<br><em>desde cero.</em></h1>
+    <p>Instalá Oracle Clue con <code>uv</code>, creá un repositorio Git temporal desde tu terminal, introducí un defecto visible, prepará un paquete de revisión y validá la correspondencia exacta de un informe técnico.</p>
+    <div class="guide-badges">
+      <span>Windows · macOS · Linux</span>
+      <span>Con uv + paquete publicado en PyPI</span>
+      <span>Ejemplo local · Sin llamadas a IA</span>
+    </div>
+  </div>
+
+  <div class="guide-layout">
+    <aside class="guide-nav" aria-label="Pasos de la guía">
+      <a href="#antes" class="active">Antes de empezar</a>
+      <a href="#instalar">1. Instalar herramientas</a>
+      <a href="#crear-repo">2. Crear repositorio</a>
+      <a href="#sembrar-defecto">3. Sembrar defecto</a>
+      <a href="#contexto">4. Agregar contexto</a>
+      <a href="#preparar">5. Preparar paquete</a>
+      <a href="#informe">6. Redactar informe</a>
+      <a href="#validar">7. Validar informe</a>
+      <a href="#triage">8. Registrar triage</a>
+      <a href="#recuperacion">9. Si el código cambia</a>
+      <a href="#diferencia">10. Clue vs Oracle</a>
+      <a href="#problemas">Si algo no funciona</a>
+    </aside>
+
+    <div class="guide-content">
+      <section id="antes">
+        <p class="eyebrow">CONCEPTOS Y FRONTERAS</p>
+        <h2>Antes de empezar: qué hace y qué NO hace Clue.</h2>
+        <p>Vamos a trabajar con un programa mínimo en Python: una función de cálculo de totales en <code>total.py</code>. La guía se verifica en Linux; las variantes Windows/macOS se inspeccionan, sin piloto con una persona principiante. No hace falta clonar el código fuente de Oracle Clue; lo instalaremos como una herramienta de terminal independiente mediante <code>uv</code>.</p>
+        <p>Una <strong>terminal</strong> es una ventana para escribir comandos: PowerShell en Windows, Terminal en macOS o cualquier terminal en Linux. Un <strong>editor de texto plano</strong> (como <a href="https://code.visualstudio.com/download" target="_blank" rel="noreferrer">Visual Studio Code</a>) permite editar código y archivos JSON y guardarlos como texto UTF-8. En el editor elegí Archivo → Abrir carpeta para abrir laboratorio-clue cuando lo crees. En Windows activá las extensiones de nombre de archivo para evitar total.py.txt. Cada bloque que define un archivo es contenido para pegar en el editor; los bloques de comandos se ejecutan en la terminal. <strong>Git</strong> conserva las versiones de los archivos.</p>
+
+        <div class="guide-callout warning">
+          <strong>Frontera fundamental de Clue 0.1.0a1</strong>
+          <p><strong>Oracle Clue NO llama a modelos de inteligencia artificial ni busca defectos automáticamente.</strong> Tampoco aprueba código ni garantiza que esté libre de errores. Clue comprueba dos cosas sobre el contexto seleccionado: que el paquete de contexto represente exactamente los commits de Git sin omisiones silenciosas, y que el informe técnico señale líneas dentro de los rangos del diff, que también incluyen contexto sin modificar. La revisión y aprobación final siempre corresponden a una persona capacitada.</p>
+        </div>
+      </section>
+
+      <section id="instalar">
+        <p class="step-kicker">PASO 01</p>
+        <h2>Instalá las herramientas necesarias.</h2>
+        <p>Asegurate de tener <a href="https://git-scm.com/install/" target="_blank" rel="noreferrer">Git instalado</a>. Luego instalá <strong>uv</strong>, el gestor moderno de paquetes de Python, según tu sistema operativo:</p>
+
+        <details>
+          <summary>Windows · PowerShell</summary>
+          <div class="code-block">
+            <pre><code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+            <button class="copy-code" type="button">Copiar</button>
+          </div>
+        </details>
+
+        <details>
+          <summary>macOS o Linux · Terminal</summary>
+          <div class="code-block">
+            <pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh</code></pre>
+            <button class="copy-code" type="button">Copiar</button>
+          </div>
+          <p>Alternativa con wget si no tenés curl:</p>
+          <div class="code-block">
+            <pre><code>wget -qO- https://astral.sh/uv/install.sh | sh</code></pre>
+            <button class="copy-code" type="button">Copiar</button>
+          </div>
+        </details>
+
+        <p>Cerrá y volvé a abrir tu terminal. Comprobá que las herramientas respondan:</p>
+        <div class="code-block">
+          <pre><code>git --version
+uv --version</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Instalá Python 3.13 e instalá Oracle Clue desde PyPI en un entorno aislado con <code>uv tool</code>:</p>
+        <div class="code-block">
+          <pre><code>uv python install 3.13
+uv tool install --python 3.13 oracle-clue==0.1.0a1
+uv tool update-shell</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Volvé a abrir tu terminal y comprobá que Clue esté disponible:</p>
+        <div class="code-block">
+          <pre><code>oracle-clue --version</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+        <p>Esperamos la salida exacta: <code>oracle-clue 0.1.0a1</code>.</p>
+
+        <p><em>Nota:</em> También podés ejecutar Clue sin instalación permanente usando <code>uvx --from oracle-clue==0.1.0a1 oracle-clue --help</code>.</p>
+      </section>
+
+      <section id="crear-repo">
+        <p class="step-kicker">PASO 02</p>
+        <h2>Creá un repositorio de prueba nuevo.</h2>
+        <p>Creá una carpeta vacía para tu prueba en tu directorio de trabajo (por ejemplo en tu carpeta personal). No clones el repositorio de Clue:</p>
+
+        <div class="code-block">
+          <pre><code>mkdir laboratorio-clue
+cd laboratorio-clue
+git init</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Configurá una identidad local de Git para este repositorio:</p>
+        <div class="code-block">
+          <pre><code>git config user.name "Tu Nombre"
+git config user.email "tu-correo@example.invalid"</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Abrí la carpeta <code>laboratorio-clue</code> en tu editor de texto. Creá un archivo llamado <code>total.py</code> con este contenido inicial completo:</p>
+        <div class="code-block">
+          <pre><code>def calcular_total(precio: float, cantidad: int) -> float:
+    return precio * cantidad
+</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Guardá el archivo y creá el <strong>primer commit</strong> (que servirá como base):</p>
+        <div class="code-block">
+          <pre><code>git add total.py
+git commit -m "Implementar cálculo de total original"</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <div class="guide-callout">
+          <strong>¿Por qué necesitamos dos commits en Git?</strong>
+          <p>Clue compara dos estados confirmados en el historial de Git (un commit <code>base</code> y el commit <code>HEAD</code>). Un repositorio nuevo con un solo commit no tiene un commit padre con el que comparar diferencias. Por eso Clue requiere que exista un commit base que difiera de HEAD.</p>
+        </div>
+      </section>
+
+      <section id="sembrar-defecto">
+        <p class="step-kicker">PASO 03</p>
+        <h2>Introducí un cambio con un defecto real y visible.</h2>
+        <p>En tu editor, abrí <code>total.py</code> y modificá la línea 2: reemplazá el operador de multiplicación <code>*</code> por el de suma <code>+</code>. El archivo completo debe quedar así:</p>
+
+        <div class="code-block">
+          <pre><code>def calcular_total(precio: float, cantidad: int) -> float:
+    return precio + cantidad
+</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>El error es evidente: si compramos 3 unidades a $10.0, la función devolverá <code>13.0</code> en lugar de <code>30.0</code>.</p>
+        <p>Guardá el archivo y confirmá el <strong>segundo commit</strong> (que será tu HEAD):</p>
+
+        <div class="code-block">
+          <pre><code>git add total.py
+git commit -m "Modificar cálculo de total con defecto sembrado"</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Comprobá que el árbol de trabajo esté completamente limpio:</p>
+        <div class="code-block">
+          <pre><code>git status</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+        <p>Debe indicar que no quedan cambios por confirmar (el texto puede estar traducido). Para comprobarlo sin depender del idioma, <code>git status --porcelain</code> no debe imprimir nada en este ejemplo.</p>
+
+        <div class="guide-callout warning">
+          <strong>La exigencia de un árbol limpio</strong>
+          <p>Clue revisa commits reales. Si hay cambios locales sin confirmar o archivos modificados en stage, Clue se detiene con el error: <code>CLUE: hay cambios versionados sin commit; confirmalos o usá un checkout limpio</code>. Esto previene presentar como revisado código que aún no forma parte del historial trazable. Archivos ignorados por <code>.gitignore</code> o no versionados tampoco entran al diff.</p>
+        </div>
+      </section>
+
+      <section id="contexto">
+        <p class="step-kicker">PASO 04</p>
+        <h2>Agregá un archivo de contexto explicativo.</h2>
+        <p>Clue permite adjuntar archivos del repositorio para que el revisor conozca las especificaciones o reglas de negocio sin tener que clonar todo el proyecto. Creá en la raíz del repo un archivo llamado <code>especificacion.md</code>:</p>
+
+        <div class="code-block">
+          <pre><code># Especificación de Cálculo
+El total debe calcularse como el producto aritmético del precio unitario por la cantidad.
+</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Podés dejarlo en el árbol o commitearlo. Para este ejemplo, lo commiteamos:</p>
+        <div class="code-block">
+          <pre><code>git add especificacion.md
+git commit -m "Agregar especificación de cálculo"</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Las rutas pasadas a <code>--contexto</code> se resuelven siempre desde la raíz del repo y no pueden apuntar a enlaces simbólicos ni a archivos de más de 256 KB.</p>
+      </section>
+
+      <section id="preparar">
+        <p class="step-kicker">PASO 05</p>
+        <h2>Prepará el paquete de revisión.</h2>
+        <p>Creá una carpeta <strong>fuera</strong> de tu repositorio para guardar los artefactos de la revisión (por ejemplo, en la carpeta superior):</p>
+
+        <details>
+          <summary>Comando según tu sistema operativo</summary>
+          <div class="code-block">
+            <pre><code>mkdir ../revisiones</code></pre>
+            <button class="copy-code" type="button">Copiar</button>
+          </div>
+        </details>
+
+        <p>Ahora ejecutá <code>oracle-clue preparar</code>. Comparamos contra <code>HEAD~2</code> (el commit previo a los cambios de código y especificación), o podés usar el hash del primer commit:</p>
+
+        <div class="code-block">
+          <pre><code>oracle-clue preparar --repo . --base HEAD~2 --contexto especificacion.md --salida ../revisiones/contexto.json</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Esperamos la salida:</p>
+        <div class="code-block">
+          <pre><code>Paquete preparado: ../revisiones/contexto.json; omisiones: 0. No es un informe de revisión.</code></pre>
+        </div>
+
+        <div class="guide-callout">
+          <strong>Reglas obligatorias de <code>--salida</code></strong>
+          <p>1. <strong>Fuera del repositorio:</strong> Si intentás guardar el archivo dentro de la carpeta del repo, Clue arrojará el error <code>CLUE: guardá el paquete fuera del repo revisado</code>.<br>
+          2. <strong>Archivo nuevo:</strong> Clue abre el destino en modo exclusivo (<code>'x'</code>). Si <code>contexto.json</code> ya existía, fallará para evitar sobreescrituras accidentales de paquetes previos.<br>
+          3. <strong>Stdout por defecto:</strong> Si no especificás <code>--salida</code>, Clue imprime el JSON directamente por terminal.</p>
+        </div>
+
+        <p>Abrí <code>../revisiones/contexto.json</code> en tu editor. Observá los campos clave:</p>
+        <ul>
+          <li><code>diff_sha256</code>: Hash criptográfico SHA-256 del diff raw de Git.</li>
+          <li><code>context_sha256</code>: Huella de la representación compacta del paquete antes de agregar el propio campo context_sha256; incluye diff, textos, contextos, omisiones y metadatos.</li>
+          <li><code>files</code>: Muestra los archivos modificados, su texto anterior (<code>base_text</code>), su texto actual (<code>head_text</code>), el parche unificado y los rangos de línea <code>ranges</code>:
+            <br><code>"ranges": { "base": [[1, 2]], "head": [[1, 2]] }</code>.</li>
+          <li><code>limitations</code>: Clue declara de forma explícita que preparar contexto no ejecuta revisiones de IA ni aprobación humana.</li>
+        </ul>
+
+        <div class="guide-callout warning">
+          <strong>Límites técnicos estrictos de Clue</strong>
+          <p>• Máximo <strong>200 archivos</strong> en el diff.<br>
+          • Máximo <strong>256 KB</strong> por archivo o blob de contexto.<br>
+          • Máximo <strong>1 MB</strong> para el paquete serializado compacto.<br>
+          • Omisión automática de credenciales conocidas (<code>.env</code>, <code>.ssh</code>, <code>id_rsa</code>, <code>*.pem</code>, <code>*.key</code>) y de archivos binarios.<br>
+          • <strong>Seguridad:</strong> El filtro de nombres no garantiza ausencia de secretos en otros archivos normales. El operador debe revisar el contenido de <code>contexto.json</code> antes de entregarlo a un tercero. Clue no envía datos a internet.</p>
+        </div>
+      </section>
+
+      <section id="informe">
+        <p class="step-kicker">PASO 06</p>
+        <h2>Redactá el informe de revisión (Asistente Python).</h2>
+        <p>Un revisor técnico (humano o modelo externo) lee <code>contexto.json</code> y genera un informe conforme a <a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/hallazgos.schema.json" target="_blank" rel="noreferrer">hallazgos.schema.json</a>.</p>
+
+        <p>Para no tener que copiar manualmente los hashes SHA-256 ni recurrir a comandos opacos de terminal, creamos un archivo Python completo y transparente llamado <code>armar_informe.py</code> en la raíz de tu proyecto. <strong>Este script es un simple asistente de documentación para armar el JSON; Clue no genera hallazgos automáticamente.</strong></p>
+
+        <p>Creá el archivo <code>armar_informe.py</code> en tu editor con este código completo:</p>
+
+        <div class="code-block">
+          <pre><code>"""Asistente documental para generar informe.json de ejemplo.
+Lee contexto.json real y arma un informe conforme a hallazgos.schema.json.
+Clue NO produce hallazgos automáticamente; este script es solo un facilitador."""
+from pathlib import Path
+import json
+
+def main():
+    paquete_path = Path("../revisiones/contexto.json").resolve()
+    if not paquete_path.exists():
+        raise SystemExit(f"No se encontró {paquete_path}. Ejecutá el paso 5 primero.")
+
+    bundle = json.loads(paquete_path.read_text(encoding="utf-8"))
+
+    cambiado = next((item for item in bundle["files"] if item["file"] == "total.py"), None)
+    if not cambiado or len(cambiado["head_text"].splitlines()) &lt; 2 or cambiado["head_text"].splitlines()[1].strip() != "return precio + cantidad":
+        raise SystemExit("Este asistente solo documenta el defecto de este ejemplo; revisá el paquete antes de generar otro informe.")
+
+    informe = {
+        "schema_version": "oracle-clue.review/v1",
+        "repo": bundle["repo"],
+        "base": bundle["base"],
+        "head": bundle["head"],
+        "diff_sha256": bundle["diff_sha256"],
+        "context_sha256": bundle["context_sha256"],
+        "provider": {
+            "name": "Revisor humano de ejemplo",
+            "model": None
+        },
+        "review_status": "completo",
+        "limitations": [],
+        "findings": [
+            {
+                "id": "HALLAZGO-01",
+                "kind": "bug",
+                "severity": "alta",
+                "confidence": 1.0,
+                "title": "Operación de suma en lugar de multiplicación",
+                "explanation": "calcular_total devuelve precio + cantidad en lugar de precio * cantidad.",
+                "location": {
+                    "file": "total.py",
+                    "side": "head",
+                    "start_line": 2,
+                    "end_line": 2
+                },
+                "trigger": "Llamar con precio=10.0 y cantidad=3 devuelve 13.0 en vez de 30.0.",
+                "evidence": "Línea 2 en head_text: return precio + cantidad",
+                "related_requirement": None,
+                "status": "pendiente",
+                "verification": "Ejecutar una prueba unitaria: assert calcular_total(10.0, 3) == 30.0"
+            }
+        ]
+    }
+
+    salida = Path("../revisiones/informe.json")
+    with salida.open("x", encoding="utf-8") as file:
+        file.write(json.dumps(informe, indent=2, ensure_ascii=False) + "\n")
+    print(f"Informe redactado con éxito en: {salida}")
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Ejecutá el asistente desde tu terminal:</p>
+        <div class="code-block">
+          <pre><code>uv run --no-project --python 3.13 python armar_informe.py</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <div class="guide-callout">
+          <strong>Por qué <code>status: "pendiente"</code> es obligatorio</strong>
+          <p>El schema <code>hallazgos.schema.json</code> exige que todo hallazgo emitido por un revisor esté en estado <code>pendiente</code>. Ningún modelo de IA ni revisor externo puede marcar un hallazgo como aprobado, corregido o descartado en este archivo. Esas decisiones pertenecen exclusivamente al registro de decisiones.</p>
+        </div>
+      </section>
+
+      <section id="validar">
+        <p class="step-kicker">PASO 07</p>
+        <h2>Validá la integridad del informe con Clue.</h2>
+        <p>Llegó el momento de ejecutar la validación de Clue. Este comando conecta el informe con el paquete y con el estado vivo de tu repositorio:</p>
+
+        <div class="code-block">
+          <pre><code>oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Esperamos la respuesta exitosa:</p>
+        <div class="code-block">
+          <pre><code>Formato y vigencia verificados. No confirma los hallazgos ni autentica al revisor o al actor humano.</code></pre>
+        </div>
+
+        <p>¿Qué comprobó Clue exactamente?</p>
+        <ol>
+          <li>Volvió a recolectar el contexto y comprobó que su estructura completa coincida con el paquete. Eso detecta discrepancias en las entradas seleccionadas; no autentica al autor ni demuestra que ningún archivo fuera de ese alcance haya cambiado.</li>
+          <li>Validó <code>informe.json</code> contra <code>hallazgos.schema.json</code>.</li>
+          <li>Comprobó que <code>diff_sha256</code> y <code>context_sha256</code> en el informe coincidan con el paquete.</li>
+          <li>Comprobó que el hallazgo apunte a <code>total.py</code>, del lado <code>head</code>, entre las líneas 2 y 2, y que ese rango pertenezca a un hunk del diff. Un hunk también incluye líneas de contexto sin modificar; Clue no prueba que el defecto exista ni que haya sido introducido por el cambio.</li>
+        </ol>
+
+        <h3>Comprobación didáctica: ¿Cómo rechaza Clue una ubicación fuera del diff?</h3>
+        <p>Para comprobar que la validación es real y estricta, abrí <code>../revisiones/informe.json</code> en tu editor y cambiá la ubicación a una línea fuera de todos los rangos del paquete:</p>
+        <div class="code-block">
+          <pre><code>"start_line": 999,
+"end_line": 999</code></pre>
+        </div>
+        <p>Guardá y volvé a ejecutar <code>oracle-clue validar</code>:</p>
+        <div class="code-block">
+          <pre><code>oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+        <p>Clue se detiene con error de inmediato:</p>
+        <div class="code-block">
+          <pre><code>CLUE: el rango del hallazgo no pertenece a ese lado del diff</code></pre>
+        </div>
+        <p>Volvé a poner <code>start_line: 2, end_line: 2</code> en <code>informe.json</code> antes de continuar.</p>
+      </section>
+
+      <section id="triage">
+        <p class="step-kicker">PASO 08</p>
+        <h2>Registrá las decisiones humanas por separado (Opcional).</h2>
+        <p>Las decisiones humanas sobre qué hacer con cada hallazgo se guardan por separado según <a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/triage.schema.json" target="_blank" rel="noreferrer">triage.schema.json</a>. Esto permite que el informe técnico original se conserve sin sobrescribirlo.</p>
+
+        <p>Creá un script <code>armar_triage.py</code> para calcular el hash exacto del archivo <code>informe.json</code> y registrar una decisión que hayas tomado. Este paso es opcional: si todavía no hay una decisión, omitilo. El código sigue con el defecto; no lo declares corregido antes de corregirlo. Clue comprueba los campos y su enlace, sin verificar que la acción declarada se haya realizado:</p>
+
+        <div class="code-block">
+          <pre><code>&quot;&quot;&quot;Asistente externo para registrar decisiones explícitas, sin aprobar ni corregir código.&quot;&quot;&quot;
+import hashlib
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+
+def main():
+    informe_path = Path(&quot;../revisiones/informe.json&quot;)
+    informe_bytes = informe_path.read_bytes()
+    informe = json.loads(informe_bytes)
+    print(&quot;Este asistente registra tu decisión; no verifica que sea correcta ni ejecuta correcciones.&quot;)
+    finding_id = input(&quot;Id del hallazgo sobre el que decidiste: &quot;).strip()
+    if finding_id not in {item[&quot;id&quot;] for item in informe[&quot;findings&quot;]}:
+        raise SystemExit(&quot;Ese id no pertenece al informe.&quot;)
+    status = input(&quot;Decisión ya tomada (corregido, descartado o riesgo_aceptado): &quot;).strip()
+    if status not in {&quot;corregido&quot;, &quot;descartado&quot;, &quot;riesgo_aceptado&quot;}:
+        raise SystemExit(&quot;No hay decisión válida; no se creó el registro.&quot;)
+    reason = input(&quot;Motivo y evidencia de la decisión: &quot;).strip()
+    actor = input(&quot;Tu nombre: &quot;).strip()
+    if not reason or not actor:
+        raise SystemExit(&quot;Falta motivo o responsable; no se creó el registro.&quot;)
+    triage = {
+        &quot;schema_version&quot;: &quot;oracle-clue.triage/v1&quot;,
+        &quot;report_sha256&quot;: hashlib.sha256(informe_bytes).hexdigest(),
+        &quot;decisions&quot;: [{&quot;finding_id&quot;: finding_id, &quot;status&quot;: status, &quot;reason&quot;: reason,
+                       &quot;actor&quot;: actor, &quot;at&quot;: datetime.now(timezone.utc).isoformat()}]
+    }
+    salida = Path(&quot;../revisiones/triage.json&quot;)
+    with salida.open(&quot;x&quot;, encoding=&quot;utf-8&quot;) as file:
+        file.write(json.dumps(triage, indent=2, ensure_ascii=False) + &quot;\n&quot;)
+    print(f&quot;Decisión registrada en: {salida}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Ejecutalo para crear <code>triage.json</code>:</p>
+        <div class="code-block">
+          <pre><code>uv run --no-project --python 3.13 python armar_triage.py</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>Ahora validá el conjunto completo pasando <code>--triage</code>:</p>
+        <div class="code-block">
+          <pre><code>oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo . --triage ../revisiones/triage.json</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+        <p>Clue verifica que <code>triage.json</code> apunte al hash exacto del informe y que cada <code>finding_id</code> exista en el informe sin duplicados.</p>
+      </section>
+
+      <section id="recuperacion">
+        <p class="step-kicker">PASO 09</p>
+        <h2>Qué pasa si el código cambia (Recuperación).</h2>
+        <p>Ahora que detectaste el defecto en <code>total.py</code>, lo corregís en tu editor volviendo a <code>return precio * cantidad</code> y creás un nuevo commit en Git:</p>
+
+        <div class="code-block">
+          <pre><code>git add total.py
+git commit -m "Corregir cálculo de total restableciendo multiplicación"</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+
+        <p>¿Qué ocurre si intentás validar el informe anterior ahora?</p>
+        <div class="code-block">
+          <pre><code>oracle-clue validar ../revisiones/informe.json --paquete ../revisiones/contexto.json --repo .</code></pre>
+          <button class="copy-code" type="button">Copiar</button>
+        </div>
+        <p>Clue lo rechaza inmediatamente:</p>
+        <div class="code-block">
+          <pre><code>CLUE: el paquete no coincide con el repositorio/contexto actual</code></pre>
+        </div>
+
+        <p><strong>El ciclo correcto de recuperación:</strong></p>
+        <ol>
+          <li>El commit nuevo alteró HEAD. El paquete anterior <code>contexto.json</code> quedó obsoleto.</li>
+          <li>Preparás un nuevo paquete con una ruta de salida nueva (ej. <code>../revisiones/contexto_v2.json</code>).</li>
+          <li>El revisor genera un nuevo informe para ese paquete.</li>
+          <li>Validás el nuevo informe contra el nuevo paquete. El asistente de esta guía solo documenta el defecto sembrado: no lo reutilices para inventar ese hallazgo una vez corregido.</li>
+        </ol>
+      </section>
+
+      <section id="diferencia">
+        <p class="step-kicker">PASO 10</p>
+        <h2>Diferencia entre Oracle Clue y el juicio de Oracle.</h2>
+        <p>Es común preguntarse qué diferencia hay entre Clue y Oracle (o Oracle Factory):</p>
+        <ul>
+          <li><strong>Oracle Clue:</strong> Es un inspector de integridad estructural. Trabaja a nivel de Git, diffs, hashes SHA-256 y rangos de líneas. Responde: <em>«¿Este informe corresponde verdaderamente al diff entre estos dos commits?»</em></li>
+          <li><strong>Oracle (metalenguaje):</strong> Es un evaluador de juicios de hecho. Trabaja a nivel de observaciones concretas contra medidas elegidas para requisitos; OpenSpec es una fuente posible. Responde: <em>«¿Los hechos observados en las pruebas cumplen con las medidas acordadas?»</em></li>
+          <li><strong>Oracle Factory:</strong> El alpha registra acuerdos, tareas, revisión externa y juicio de hechos. No ejecuta agentes, tests ni sensores, y su cierre es local.</li>
+        </ul>
+        <p>Ninguna de estas herramientas aprueba automáticamente tu entrega ni reemplaza tu responsabilidad como desarrollador.</p>
+      </section>
+
+      <section id="problemas">
+        <p class="eyebrow">PREGUNTAS FRECUENTES Y DIAGNÓSTICO</p>
+        <h2>Si algo no funciona como esperabas.</h2>
+
+        <details>
+          <summary>CLUE: guardá el paquete fuera del repo revisado</summary>
+          <p>El argumento <code>--salida</code> no puede apuntar a un archivo dentro de la carpeta que estás inspeccionando. Usá una ruta como <code>../contexto.json</code> o <code>/tmp/contexto.json</code>.</p>
+        </details>
+
+        <details>
+          <summary>FileExistsError al ejecutar preparar</summary>
+          <p>Clue crea los archivos de paquete en modo exclusivo (<code>'x'</code>) para proteger paquetes anteriores de ser sobreescritos accidentalmente. Elegí un nombre nuevo (ej. <code>contexto_v2.json</code>) para conservar el paquete anterior.</p>
+        </details>
+
+        <details>
+          <summary>CLUE: hay cambios versionados sin commit</summary>
+          <p>Tenés modificaciones sin guardar en Git. Ejecutá <code>git status</code>. Revisá esos cambios y guardalos en un commit si corresponden a la versión que querés revisar.</p>
+        </details>
+
+        <details>
+          <summary>CLUE: el diff está vacío</summary>
+          <p>Los commits elegidos no tienen diferencias de archivos; también puede pasar con commits distintos. Clue necesita revisar cambios reales entre dos commits distintos. Utilizá <code>HEAD~1</code> o el hash de un commit previo.</p>
+        </details>
+
+        <details>
+          <summary>CLUE: el rango del hallazgo no pertenece a ese lado del diff</summary>
+          <p>Las líneas <code>start_line</code> y <code>end_line</code> del informe deben caer dentro de los rangos del lado actual (<code>head</code>) o anterior (<code>base</code>) registrados en <code>contexto.json</code>. Los rangos también incluyen líneas de contexto que no cambiaron. El revisor debe justificar que el problema pertenece al cambio; Clue no demuestra esa relación.</p>
+        </details>
+
+        <details>
+          <summary>Esquemas oficiales en GitHub (versión 0.1.0a1)</summary>
+          <p>Podés consultar y descargar los contratos JSON Schema oficiales publicados en GitHub:</p>
+          <ul>
+            <li><a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/hallazgos.schema.json" target="_blank" rel="noreferrer">hallazgos.schema.json (v0.1.0a1)</a></li>
+            <li><a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/triage.schema.json" target="_blank" rel="noreferrer">triage.schema.json (v0.1.0a1)</a></li>
+            <li><a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/arquitectura.md" target="_blank" rel="noreferrer">arquitectura.md (v0.1.0a1)</a></li>
+          </ul>
+        </details>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap">
+  <a class="footer-brand" href="./index.html">ORACLE CLUE <span>· Integridad de revisión y evidencia sin magia.</span></a>
+  <div>
+    <a href="./index.html#mesa">Mesa de inspección</a>
+    <a href="https://pypi.org/project/oracle-clue/0.1.0a1/" target="_blank" rel="noreferrer">PyPI 0.1.0a1 ↗</a>
+    <a href="https://github.com/Segtem/oracle-factory" target="_blank" rel="noreferrer">Factory ↗</a>
+    <a href="https://github.com/Segtem/oracle-task" target="_blank" rel="noreferrer">Task ↗</a>
+    <a href="https://github.com/Segtem/oracle-clue" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </div>
+</footer>
+
+</body>
+</html>

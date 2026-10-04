@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Oracle Clue: preparación local de contexto Git reproducible y validación de huellas y estructura de informes de revisión externos. Instalás la herramienta una vez y elegís qué repositorio local revisar. El alpha no busca defectos con IA ni aprueba cambios.">
+  <meta name="theme-color" content="#132421">
+  <title>Oracle Clue — Contexto reproducible e integridad de revisión</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script src="./assets/clue.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#mesa">Saltar a la mesa de inspección</a>
+
+<header class="topbar wrap">
+  <a class="brand" href="./index.html" aria-label="Oracle Clue, inicio">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="4" fill="#132421"/>
+      <rect x="5" y="5" width="10" height="14" fill="#1e3630"/>
+      <rect x="17" y="5" width="10" height="14" fill="#1e3630"/>
+      <rect x="7" y="8" width="6" height="2" fill="#d46b5a"/>
+      <rect x="7" y="12" width="4" height="2" fill="#738b82"/>
+      <rect x="19" y="8" width="6" height="2" fill="#a2d6b5"/>
+      <rect x="19" y="12" width="6" height="2" fill="#a2d6b5"/>
+      <rect x="11" y="11" width="10" height="2" fill="#ebc36f"/>
+      <rect x="11" y="19" width="10" height="2" fill="#ebc36f"/>
+      <rect x="9" y="13" width="2" height="6" fill="#ebc36f"/>
+      <rect x="21" y="13" width="2" height="6" fill="#ebc36f"/>
+      <rect x="20" y="20" width="3" height="3" fill="#ebc36f"/>
+      <rect x="22" y="22" width="3" height="3" fill="#c79947"/>
+      <rect x="24" y="24" width="4" height="4" fill="#8c642d"/>
+    </svg>
+    <span>ORACLE <span class="brand-detail">CLUE 0.1.0a1</span></span>
+  </a>
+  <nav aria-label="Navegación principal">
+    <a href="#mesa">Mesa de inspección</a>
+    <a href="#contratos">Entrada y salida</a>
+    <a href="#limites">Límites y realidades</a>
+    <a href="#familia">Familia Oracle</a>
+    <a href="./desde-cero.html">Desde cero</a>
+  </nav>
+  <a class="repo-link" href="https://github.com/Segtem/oracle-clue" target="_blank" rel="noreferrer">Código abierto <span aria-hidden="true">↗</span></a>
+</header>
+
+<main id="inicio">
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div>
+    <p class="eyebrow"><span class="signal green"></span> CONTEXTO REPRODUCIBLE · INFORMES CON REFERENCIAS COMPROBABLES</p>
+    <h1 id="hero-title">Contexto reproducible.<br>Evidencia <em>sin magia.</em></h1>
+  </div>
+  <div class="hero-copy">
+    <p>Oracle Clue prepara paquetes de contexto del diff de tu repositorio Git y valida la integridad de informes de revisión externos. Instalás la herramienta una vez y elegís qué repositorio local revisar. El alpha no busca defectos con IA ni aprueba cambios.</p>
+    <div class="hero-actions">
+      <a class="primary-btn" href="#mesa">Entrar a la mesa de inspección <span aria-hidden="true">↓</span></a>
+      <a class="secondary-btn" href="./desde-cero.html">Guía paso a paso desde cero <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="mesa" class="workshop wrap" aria-labelledby="workshop-title">
+  <div class="workshop-top">
+    <div>
+      <p class="eyebrow">EL BANCO DE PRUEBAS / 01</p>
+      <h2 id="workshop-title">La mesa de inspección de Clue.</h2>
+    </div>
+    <span class="demo-tag"><span></span> DEMOSTRACIÓN INTERACTIVA PIXEL ART</span>
+  </div>
+
+  <div class="scene-scroll" tabindex="0" aria-label="Escena pixel art de la mesa de inspección. Desplazable horizontalmente en pantallas pequeñas.">
+    <canvas id="clue-scene" width="1152" height="380" aria-label="Mesa de inspección de Oracle Clue con siete estaciones: árbol Git limpio, diff y límites, archivos de contexto, paquete canónico contexto.json, informe externo con hallazgos pendientes, validación de correspondencia de Clue y decisiones humanas separadas.">
+      La mesa de inspección de Clue recorre siete estaciones: 1) Verificación de repositorio limpio, 2) Extracción de diff y descarte de credenciales conocidas, 3) Adición de archivos de contexto con sus hashes individuales, 4) Serialización del contexto en contexto.json fuera del repositorio, 5) Recepción de informe externo con hallazgos en estado exclusivamente pendiente, 6) Validación de Clue que asegura que las líneas pertenezcan al diff real, y 7) Registro de decisiones humanas separadas en triage.json. Consultá sus detalles en los paneles inferiores.
+    </canvas>
+  </div>
+
+  <div class="tracker-strip">
+    <span class="tracker-label"><i aria-hidden="true"></i> ESTADO DE INSPECCIÓN</span>
+    <span>Un paquete reproducible. Una validación estricta de rangos.</span>
+    <span id="tracker-status">01 / Repositorio limpio y commits resueltos</span>
+  </div>
+
+  <div class="journey-controls">
+    <div class="transport">
+      <button id="restart" class="icon-button" aria-label="Volver a la primera etapa" title="Volver al inicio (Tecla R)">↺</button>
+      <button id="previous" class="icon-button" aria-label="Etapa anterior" title="Etapa anterior (Flecha Izquierda)">←</button>
+      <button id="play" class="play-button" aria-pressed="false">
+        <span id="play-icon" aria-hidden="true">▶</span>
+        <span id="play-label">Reproducir</span>
+      </button>
+      <button id="next" class="icon-button" aria-label="Etapa siguiente" title="Etapa siguiente (Flecha Derecha)">→</button>
+    </div>
+    <p id="motion-status">Avanzá a tu ritmo o probá los casos de simulación.</p>
+    <span id="counter" class="counter">01 / 07</span>
+  </div>
+
+  <nav class="stations" aria-label="Explorar las etapas de inspección">
+    <button data-stage="0" aria-current="step"><span>01</span>Git limpio</button>
+    <button data-stage="1"><span>02</span>Diff & Límites</button>
+    <button data-stage="2"><span>03</span>Contexto</button>
+    <button data-stage="3"><span>04</span>Paquete canónico</button>
+    <button data-stage="4"><span>05</span>Revisión externa</button>
+    <button data-stage="5"><span>06</span>Validación Clue</button>
+    <button data-stage="6"><span>07</span>Decisiones humanas</button>
+  </nav>
+
+  <div class="stage-detail">
+    <article class="explanation" aria-live="polite" aria-atomic="true">
+      <div class="stage-heading">
+        <p id="stage-tool" class="eyebrow">ORACLE-CLUE + GIT</p>
+        <span id="stage-maturity" class="maturity">Disponible en 0.1.0a1</span>
+      </div>
+      <h3 id="stage-title">1. Repositorio con árbol limpio</h3>
+      <p id="stage-copy" class="stage-copy">Clue opera sobre commits confirmados. Si hay diferencias en archivos versionados respecto de HEAD, Clue se detiene de inmediato para evitar mezclar cambios pendientes con los commits seleccionados.</p>
+      <dl class="artifacts">
+        <div>
+          <dt>ENTRA</dt>
+          <dd id="stage-input">Repositorio Git local y referencia base (ej. HEAD~1)</dd>
+        </div>
+        <div>
+          <dt>SALE</dt>
+          <dd id="stage-output">Archivos versionados sin diferencias con HEAD y hashes SHA de base y HEAD</dd>
+        </div>
+      </dl>
+    </article>
+
+    <aside class="decision" id="decision-panel">
+      <p class="eyebrow" id="decision-label">LO QUE SE COMPRUEBA ACÁ</p>
+      <h4 id="decision-title">Confirmar los cambios antes de revisar.</h4>
+      <p id="decision-copy">El historial de Git es la fuente de verdad. El diff excluye archivos no versionados o ignorados. Un archivo que selecciones explícitamente con --contexto sí puede incluirse y queda comprobado por su huella.</p>
+      <div id="decision-actions"></div>
+      <div id="decision-feedback" role="status">Seleccioná un caso de prueba para simular la respuesta de Clue:</div>
+    </aside>
+  </div>
+
+  <p class="simulation-note">Esta escena interactiva es una demostración didáctica de las comprobaciones de Oracle Clue 0.1.0a1. La herramienta prepara el paquete y valida su estructura; no llama a proveedores de IA ni certifica que el código esté libre de errores. La decisión final corresponde a una persona.</p>
+
+  <noscript>
+    <div class="guide-callout warning">
+      <strong>Recorrido sin JavaScript</strong>
+      <p>La demostración animada requiere JavaScript para el canvas. Podés consultar todo el flujo, los comandos de terminal y las explicaciones completas en las secciones siguientes y en la <a href="./desde-cero.html">guía paso a paso</a>.</p>
+    </div>
+  </noscript>
+</section>
+
+<section id="contratos" class="contracts-section wrap" aria-labelledby="contratos-title">
+  <div class="section-intro">
+    <p class="eyebrow">CONTRATOS Y OPERACIONES</p>
+    <h2 id="contratos-title">Qué entra, qué sale y qué comprueba.</h2>
+    <p>Oracle Clue 0.1.0a1 cuenta con dos comandos principales: <code>preparar</code> y <code>validar</code>. Cada uno tiene una frontera estricta y comprobaciones definidas.</p>
+  </div>
+
+  <div style="overflow-x: auto;">
+    <table class="contract-table">
+      <thead>
+        <tr>
+          <th>Comando</th>
+          <th>Qué entra</th>
+          <th>Qué sale</th>
+          <th>Comprobación de Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><code>preparar</code></strong></td>
+          <td>
+            • <code>--repo &lt;ruta&gt;</code> (raíz Git)<br>
+            • <code>--base &lt;ref&gt;</code> (ej. <code>HEAD~1</code>)<br>
+            • <code>--contexto &lt;archivo&gt;</code> (opcional, repetible)<br>
+            • <code>--salida &lt;ruta&gt;</code> (opcional, fuera del repo)
+          </td>
+          <td>
+            JSON por terminal, o archivo nuevo <code>contexto.json</code> si elegís <code>--salida</code>, bajo schema <code>oracle-clue.bundle/v1</code> con <code>diff_sha256</code>, <code>context_sha256</code>, archivos con parches y rangos de línea, y lista de omisiones.
+          </td>
+          <td>
+            <strong>Contexto reproducible.</strong> Comprueba que los archivos versionados no difieran de HEAD. Las mismas entradas producen exactamente el mismo JSON. Rechaza diffs vacíos o entradas mayores a los límites.
+          </td>
+        </tr>
+        <tr>
+          <td><strong><code>validar</code></strong></td>
+          <td>
+            • Archivo <code>informe.json</code><br>
+            • <code>--paquete &lt;contexto.json&gt;</code><br>
+            • <code>--repo &lt;ruta&gt;</code>
+          </td>
+          <td>
+            Mensaje de éxito si cumple todas las reglas, o error explícito con código 1 si el informe o el contexto no corresponden.
+          </td>
+          <td>
+            <strong>Correspondencia con el contexto.</strong> Re-recolecta el contexto del repo actual y exige coincidencia idéntica. Valida contra <code>hallazgos.schema.json</code>. Verifica que cada ubicación esté dentro de los rangos del diff, que incluyen líneas de contexto sin modificar. <em>No confirma si el hallazgo es cierto ni aprueba el código.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong><code>validar --triage</code></strong></td>
+          <td>
+            • Mismos datos de validar<br>
+            • <code>--triage &lt;triage.json&gt;</code>
+          </td>
+          <td>
+            Confirmación de enlace del triage al informe conservado, o rechazo si hay discrepancias.
+          </td>
+          <td>
+            <strong>Trazabilidad de la decisión humana.</strong> Valida contra <code>triage.schema.json</code>. Comprueba que <code>report_sha256</code> coincida exactamente con los bytes del informe y que cada <code>finding_id</code> exista y no esté duplicado. <em>No autentica la firma del actor.</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="limites" class="boundaries-section wrap" aria-labelledby="limites-title">
+  <div class="section-intro">
+    <p class="eyebrow">ALCANCE DEL ALPHA</p>
+    <h2 id="limites-title">Qué comprueba y qué queda afuera.</h2>
+    <p>Estas comprobaciones se aplican al contexto seleccionado. No sustituyen la revisión del código.</p>
+  </div>
+
+  <div class="reality-cards">
+    <article class="reality-card danger">
+      <h3><span class="signal brick"></span> No llama a modelos de IA ni busca defectos</h3>
+      <p>La versión 0.1.0a1 no realiza análisis estático automático ni conecta con APIs de IA. Su función es preparar el paquete reproducible de revisión y validar que cualquier informe externo (humano o sintético) respete el contrato y corresponda al código real.</p>
+    </article>
+
+    <article class="reality-card danger">
+      <h3><span class="signal brick"></span> Validar NO es aprobar</h3>
+      <p>Cuando Clue imprime <em>«Formato y vigencia verificados»</em>, certifica que los hashes coinciden, que el schema es válido y que las líneas citadas están dentro de los rangos del diff, que incluyen contexto sin modificar. <strong>No demuestra ausencia de bugs ni valida la verdad del informe.</strong> Un informe vacío nunca aprueba un cambio.</p>
+    </article>
+
+    <article class="reality-card warning">
+      <h3><span class="signal"></span> Los filtros no garantizan ausencia de secretos</h3>
+      <p>Clue excluye automáticamente patrones de rutas típicas de credenciales (como <code>.env</code>, <code>.ssh</code>, <code>id_rsa</code>, <code>*.pem</code>, <code>*.key</code>). Sin embargo, <strong>no analiza el contenido en busca de tokens</strong> en archivos normales de código. El operador humano debe inspeccionar el paquete antes de compartirlo con terceros.</p>
+    </article>
+
+    <article class="reality-card warning">
+      <h3><span class="signal"></span> Límites estrictos de tamaño</h3>
+      <p>Para evitar desbordes de memoria y paquetes inmanejables, Clue impone límites de este corte: máximo <strong>200 archivos</strong> en el diff, máximo <strong>256 KB</strong> por archivo o blob de contexto, y máximo <strong>1 MB</strong> para el paquete serializado compacto. Si un cambio supera estos límites, Clue exige dividir la revisión.</p>
+    </article>
+
+    <article class="reality-card success">
+      <h3><span class="signal green"></span> Sin dependencias en cada repo ni GitHub Apps</h3>
+      <p>Clue no necesita instalarse como dependencia de tu proyecto ni requiere instalar una GitHub App con permisos sobre tu organización. Se instala una sola vez en tu entorno de trabajo con <code>uv tool install oracle-clue==0.1.0a1</code> y opera sobre cualquier ruta local con <code>--repo</code>.</p>
+    </article>
+
+    <article class="reality-card success">
+      <h3><span class="signal green"></span> Vigencia del contexto recolectado</h3>
+      <p>Si modificás un archivo versionado, agregás un commit a Git o editás un archivo de especificación adjunto mediante <code>--contexto</code>, el paquete anterior queda automáticamente desactualizado. Clue detecta la discrepancia de hashes y rechaza validar informes basados en contextos viejos.</p>
+    </article>
+  </div>
+</section>
+
+<section id="familia" class="kit-section wrap" aria-labelledby="familia-title">
+  <div class="section-intro">
+    <div>
+      <p class="eyebrow">ECOSISTEMA ORACLE</p>
+      <h2 id="familia-title">Tres herramientas, un principio compartido.</h2>
+    </div>
+    <p>Oracle Clue forma parte de la familia de herramientas de código abierto Oracle, diseñadas para construir software con evidencia auditable y dirección humana.</p>
+  </div>
+
+  <div class="kit-grid">
+    <article class="kit-item">
+      <span class="tool-icon" aria-hidden="true">⌕</span>
+      <div>
+        <h3>Oracle Clue <span>La revisión</span></h3>
+        <p>Prepara contexto Git reproducible y comprueba que los informes externos señalen líneas reales del diff. No invoca IA automáticamente en el core.</p>
+        <span class="tool-status integrated">Disponible hoy (alpha 0.1.0a1)</span>
+      </div>
+    </article>
+
+    <article class="kit-item">
+      <span class="tool-icon" aria-hidden="true">▦</span>
+      <div>
+        <h3>Oracle Task <span>El hilo del trabajo</span></h3>
+        <p>Conserva tareas, bloqueos, contexto operativo y registro de decisiones locales. Conecta el pedido inicial con lo que efectivamente se realizó en el repo.</p>
+        <a class="tool-status integrated" style="text-decoration: none;" href="https://segtem.github.io/trackertast/" target="_blank" rel="noreferrer">Web de Oracle Task ↗</a>
+      </div>
+    </article>
+
+    <article class="kit-item">
+      <span class="tool-icon" aria-hidden="true">⚙</span>
+      <div>
+        <h3>Oracle Factory <span>La fábrica</span></h3>
+        <p>Conecta acuerdos escritos OpenSpec con la importación de requisitos, hechos de sensores externos y su evaluación mediante Oracle.</p>
+        <a class="tool-status integrated" style="text-decoration: none;" href="https://segtem.github.io/oracle-factory/" target="_blank" rel="noreferrer">Web de Oracle Factory ↗</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="guide-callout" style="margin-top: 32px;">
+    <strong>Independencia sin invocaciones automáticas</strong>
+    <p>Cada una de estas herramientas se ejecuta de manera autónoma. Factory no invoca a Clue de forma automática ni Clue asume la presencia de Factory. El enlace entre ellas se establece mediante archivos de datos transparentes e inspeccionables por una persona.</p>
+  </div>
+</section>
+
+<section class="wrap" style="padding: 56px 20px; text-align: center; border-top: 1px solid var(--line);">
+  <p class="eyebrow" style="justify-content: center;"><span class="signal green"></span> PASO A PASO EN TU COMPUTADORA</p>
+  <h2 style="font-size: clamp(26px, 4vw, 38px); margin: 0 0 16px 0; font-weight: 850;">¿Querés probar tu primer paquete y validación?</h2>
+  <p style="font-size: 16px; color: var(--muted); max-width: 640px; margin: 0 auto 28px auto;">
+    Seguí la guía desde cero: instalá Clue con <code>uv</code>, creá un repositorio de prueba temporal, prepará el paquete y validá un informe con un defecto real.
+  </p>
+  <a class="primary-btn" style="font-size: 16px; padding: 14px 28px;" href="./desde-cero.html">Ir a la guía desde cero <span aria-hidden="true">→</span></a>
+</section>
+</main>
+
+<footer class="wrap">
+  <a class="footer-brand" href="./index.html">ORACLE CLUE <span>· Integridad de revisión y evidencia sin magia.</span></a>
+  <div>
+    <a href="https://pypi.org/project/oracle-clue/0.1.0a1/" target="_blank" rel="noreferrer">PyPI 0.1.0a1 ↗</a>
+    <a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/hallazgos.schema.json" target="_blank" rel="noreferrer">hallazgos.schema.json ↗</a>
+    <a href="https://github.com/Segtem/oracle-clue/blob/v0.1.0a1/docs/triage.schema.json" target="_blank" rel="noreferrer">triage.schema.json ↗</a>
+    <a href="https://github.com/Segtem/oracle-clue" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </div>
+</footer>
+
+</body>
+</html>

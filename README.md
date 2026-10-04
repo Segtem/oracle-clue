@@ -4,6 +4,9 @@ CLI local para preparar contexto reproducible y validar informes externos de rev
 
 **Este primer corte no llama a un modelo ni encuentra defectos automáticamente.** Entrega el contexto y las comprobaciones de integridad sobre los que se construirá ese revisor. Nunca aprueba, edita código ni fusiona cambios.
 
+- **Mesa de inspección interactiva (pixel art nativo):** [docs/index.html](docs/index.html)
+- **Guía paso a paso desde cero:** [docs/desde-cero.html](docs/desde-cero.html)
+
 ## Instalación
 
 La versión alpha 0.1.0a1 está [publicada en PyPI](https://pypi.org/project/oracle-clue/0.1.0a1/):
@@ -50,6 +53,9 @@ Adaptador de IA de solo lectura, evaluación con defectos sembrados y cambios li
 
 ```bash
 uv run python -m unittest discover -s tests -v
+uv run python tools/tests/run_all.py
+# Con Playwright disponible y Chromium instalado:
+node tools/test_site.cjs
 ```
 
-Las pruebas crean repos temporales, siembran un defecto y verifican que el paquete lo contiene y que un informe fixture apunta al cambio correcto. Comprueban también omisiones, límites, contexto modificado y contratos inválidos. No miden todavía precisión de un modelo.
+Las pruebas crean repos temporales, siembran un defecto y verifican que el paquete lo contiene y que un informe fixture apunta al cambio correcto. Comprueban también omisiones, límites, contexto modificado y contratos inválidos. El arnés en `tools/tests/` extrae los archivos y comandos de la guía publicada y ejecuta el recorrido completo en un repositorio temporal, incluidos los rechazos por ubicación inválida y contexto obsoleto. `tools/test_site.cjs` verifica en Chromium navegación, teclado, copia, pausa, movimiento reducido, enlaces y tamaños de pantalla. No sustituye una auditoría completa de accesibilidad ni una prueba con una persona principiante. No miden todavía precisión de un modelo.
